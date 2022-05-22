@@ -1,13 +1,13 @@
 <template>
   <div class="hello">
-    <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+    <ckeditor :editor="editor" @ready="onReady"></ckeditor>
   </div>
 </template>
 
 <script>
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CKEditor from '@ckeditor/ckeditor5-vue2';
+import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 export default {
   name: 'HelloWorld',
@@ -15,17 +15,25 @@ export default {
     msg: String
   },
   components: {
-    // Use the <ckeditor> component in this view.
     ckeditor: CKEditor.component
   },
   data() {
     return {
-      editor: ClassicEditor,
+      editor: DecoupledEditor,
       editorData: '<p>Content of the editor.</p>',
       editorConfig: {
         // The configuration of the editor.
       }
     };
+  },
+  methods: {
+    onReady( editor )  {
+      // Insert the toolbar before the editable area.
+      editor.ui.getEditableElement().parentElement.insertBefore(
+          editor.ui.view.toolbar.element,
+          editor.ui.getEditableElement()
+      );
+    }
   }
 }
 </script>
